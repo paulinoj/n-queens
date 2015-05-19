@@ -153,9 +153,7 @@
         row -= col;
         col = 0;
         while (row < size) {
-//          currentCount =+ this.get(row)[col];
           if (this.get(row)[col] === 1) {
-            console.log('found a match');
             currentCount++;
           }
           row++;
@@ -164,7 +162,6 @@
       }
       else {
         while (col < size) {
-//          currentCount =+ this.get(row)[col];
           if (this.get(row)[col] === 1) {
             currentCount++;
           }
@@ -197,11 +194,37 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+      var size = this.get('n');
+      var row = 0;
+      var col = minorDiagonalColumnIndexAtFirstRow;
+      var currentCount = 0;
+
+      if (col >= size) {
+        row = col - size;
+        col = size-1;
+      }
+      while (row < size && col >= 0) {
+        if (this.get(row)[col] === 1) {
+          currentCount++;
+        }
+        row++;
+        col--;
+      }
+      if (currentCount > 1) {
+        return true;
+      }
       return false; // fixme
+
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
+      var size = this.get('n');
+      for (var i = 0; i < (2 * size - 2); i++) {
+        if (this.hasMinorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     }
 
