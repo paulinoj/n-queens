@@ -37,37 +37,62 @@ window.countNRooksSolutions = function(n) {
   var flagPlacement = [];
   var i = 0;
   var j = 0;
+  var allSolutionsFound = false;
 
-  while (i < n) {
-    j = 0;
-    while (j < n) {
-      solution.togglePiece(i, j);
-      if (solution.hasRowConflictAt(i) || solution.hasColConflictAt(j)) {
-        solution.togglePiece(i, j);
-      }
-      else {
-        flagPlacement.push([i, j]);
-      }
-      j++;
-
-      if (j === n && i === n - 1) {
-        var lastFlag = flagPlacement.pop();
-        if (lastFlag[0] === i) {
-          counter++;
+  while (!allSolutionsFound) {
+    while (i < n) {
+      j = 0;
+      while (j < n) {
+        if (flagPlacement === undefined && i > 0) {
+            allSolutionsFound = true;
+            i = n;
+            break;
         }
-        solution.togglePiece(lastFlag[0], lastFlag[1]);
-        lastFlag = flagPlacement.pop();
-        i = lastFlag[0];
-        j = lastFlag[1];
         solution.togglePiece(i, j);
+        if (solution.hasRowConflictAt(i) || solution.hasColConflictAt(j)) {
+          solution.togglePiece(i, j);
+        }
+        else {
+          flagPlacement.push([i, j]);
+        }
         j++;
-      }
-    }
-    i++;
-  }
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+        if (j === n) {
+          var lastFlag = flagPlacement[flagPlacement.length - 1];
+          if (lastFlag[0] !== i) {
+            lastFlag = flagPlacement.pop();
+            i = lastFlag[0];
+            j = lastFlag[1];
+            solution.togglePiece(i, j);
+            j++;
+          }
+          if  (i === n - 1) {
+            flagPlacement.pop();
+            if (lastFlag[0] === i) {
+              counter++;
+              console.log("we found something");
+            }
+            solution.togglePiece(lastFlag[0], lastFlag[1]);
+            lastFlag = flagPlacement.pop();
+            i = lastFlag[0];
+            j = lastFlag[1];
+            solution.togglePiece(i, j);
+            if (j === n-1) {
+              lastFlag = flagPlacement.pop();
+              i = lastFlag[0];
+              j = lastFlag[1];
+              solution.togglePiece(i, j);
+            }
+            j++;
+          }
+        }
+      }
+      i++;
+    }
+  }
+  console.log('Number of solutions for ' + n + ' rooks:', counter);
+  return counter;
+
 };
 
 
