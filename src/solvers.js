@@ -70,7 +70,7 @@ window.countNRooksSolutions = function(n) {
             flagPlacement.pop();
             if (lastFlag[0] === i) {
               counter++;
-              console.log("we found something");
+              console.log("counter is " + counter);
             }
             solution.togglePiece(lastFlag[0], lastFlag[1]);
             lastFlag = flagPlacement.pop();
