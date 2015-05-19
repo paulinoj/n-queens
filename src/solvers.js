@@ -35,81 +35,222 @@ window.countNRooksSolutions = function(n) {
   var solution = new Board({"n": n});
   var counter = 0;
   var flagPlacement = [];
-  var i = 0;
-  var j = 0;
-  var allSolutionsFound = false;
+  var row = 0;
+  var col = 0;
+  var pieceNotPlaced;
+  var lastPosition;
 
-  while (!allSolutionsFound) {
-    while (i < n) {
-      j = 0;
-      while (j < n) {
-        if (flagPlacement === undefined && i > 0) {
-            allSolutionsFound = true;
-            i = n;
-            break;
-        }
-        solution.togglePiece(i, j);
-        if (solution.hasRowConflictAt(i) || solution.hasColConflictAt(j)) {
-          solution.togglePiece(i, j);
-        }
-        else {
-          flagPlacement.push([i, j]);
-        }
-        j++;
+  if (n === 0) {
+    return 1;
+  }
 
-        if (j === n) {
-          var lastFlag = flagPlacement[flagPlacement.length - 1];
-          if (lastFlag[0] !== i) {
-            lastFlag = flagPlacement.pop();
-            i = lastFlag[0];
-            j = lastFlag[1];
-            solution.togglePiece(i, j);
-            j++;
-          }
-          if  (i === n - 1) {
-            flagPlacement.pop();
-            if (lastFlag[0] === i) {
-              counter++;
-              console.log("counter is " + counter);
-            }
-            solution.togglePiece(lastFlag[0], lastFlag[1]);
-            lastFlag = flagPlacement.pop();
-            i = lastFlag[0];
-            j = lastFlag[1];
-            solution.togglePiece(i, j);
-            if (j === n-1) {
-              lastFlag = flagPlacement.pop();
-              i = lastFlag[0];
-              j = lastFlag[1];
-              solution.togglePiece(i, j);
-            }
-            j++;
-          }
-        }
+  while (row < n) {
+
+    pieceNotPlaced = true;
+
+    while (col < n && pieceNotPlaced) {
+      solution.togglePiece(row, col);
+      if (solution.hasRowConflictAt(row) || solution.hasColConflictAt(col)) {
+        solution.togglePiece(row, col);
       }
-      i++;
+      else {
+        flagPlacement.push([row, col]);
+        pieceNotPlaced = false;
+      }
+      col++;
+    }
+
+    if (pieceNotPlaced === true) {
+      if (flagPlacement.length === 0) {
+        return counter;
+      }
+      else {
+        lastPosition = flagPlacement.pop();
+        row = lastPosition[0];
+        col = lastPosition[1];
+        solution.togglePiece(row, col);
+        col++;
+      }
+    }
+    else
+    {
+      if (row === n - 1) {
+        counter++;
+        lastPosition = flagPlacement.pop();
+        row = lastPosition[0];
+        col = lastPosition[1];
+        solution.togglePiece(row, col);
+        col++;
+
+      }
+      else {
+        col = 0;
+        row++;
+      }
     }
   }
-  console.log('Number of solutions for ' + n + ' rooks:', counter);
-  return counter;
-
 };
+
 
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution;
+  console.log("n:  " + n);
+  var solution = new Board({"n": n});
+  var counter = 0;
+  var flagPlacement = [];
+  var row = 0;
+  var col = 0;
+  var pieceNotPlaced;
+  var lastPosition;
+
+  if (n === 0) {
+    return new Board([]).rows();
+  }
+
+
+  if (n === 1) {
+    return new Board([[1]]).rows();
+  }
+
+
+  while (row < n) {
+
+    pieceNotPlaced = true;
+
+    while (col < n && pieceNotPlaced) {
+      solution.togglePiece(row, col);
+
+      if (solution.hasRowConflictAt(row) || solution.hasColConflictAt(col) || solution.hasMajorDiagonalConflictAt(col-row) || solution.hasMinorDiagonalConflictAt(col+row)) {
+        solution.togglePiece(row, col);
+      }
+      else {
+        flagPlacement.push([row, col]);
+        pieceNotPlaced = false;
+      }
+      col++;
+    }
+
+    if (pieceNotPlaced === true) {
+      if (flagPlacement.length === 0) {
+        // var allZeroes = true;
+        // for (var i = 0; i < n; i++) {
+        //   if (solution.get(0)[i] === 1) {
+        //       allZeroes = false;
+        //   }
+        // }
+        // if (allZeroes) {
+        //   return 0;
+        // }
+  console.log('there are ' + counter + ' solutions');
+        return solution.rows();
+      }
+      else {
+        lastPosition = flagPlacement.pop();
+        row = lastPosition[0];
+        col = lastPosition[1];
+        solution.togglePiece(row, col);
+        col++;
+      }
+    }
+    else
+    {
+      if (row === n - 1) {
+//        console.log(flagPlacement);
+        return solution.rows();
+        counter++;
+        lastPosition = flagPlacement.pop();
+        row = lastPosition[0];
+        col = lastPosition[1];
+        solution.togglePiece(row, col);
+        col++;
+
+      }
+      else {
+        col = 0;
+        row++;
+      }
+    }
+  }
+
 };
 
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutionCount;
+  console.log("n:  " + n);
+  var solution = new Board({"n": n});
+  var counter = 0;
+  var flagPlacement = [];
+  var row = 0;
+  var col = 0;
+  var pieceNotPlaced;
+  var lastPosition;
+
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+
+
+  while (row < n) {
+
+    pieceNotPlaced = true;
+
+    while (col < n && pieceNotPlaced) {
+      solution.togglePiece(row, col);
+
+      if (solution.hasRowConflictAt(row) || solution.hasColConflictAt(col) || solution.hasMajorDiagonalConflictAt(col-row) || solution.hasMinorDiagonalConflictAt(col+row)) {
+        solution.togglePiece(row, col);
+      }
+      else {
+        flagPlacement.push([row, col]);
+        pieceNotPlaced = false;
+      }
+      col++;
+    }
+
+    if (pieceNotPlaced === true) {
+      if (flagPlacement.length === 0) {
+        // var allZeroes = true;
+        // for (var i = 0; i < n; i++) {
+        //   if (solution.get(0)[i] === 1) {
+        //       allZeroes = false;
+        //   }
+        // }
+        // if (allZeroes) {
+        //   return 0;
+        // }
+  console.log('there are ' + counter + ' solutions');
+        return counter;
+      }
+      else {
+        lastPosition = flagPlacement.pop();
+        row = lastPosition[0];
+        col = lastPosition[1];
+        solution.togglePiece(row, col);
+        col++;
+      }
+    }
+    else
+    {
+      if (row === n - 1) {
+//        console.log(flagPlacement);
+        console.log("hello2");
+        counter++;
+        lastPosition = flagPlacement.pop();
+        row = lastPosition[0];
+        col = lastPosition[1];
+        solution.togglePiece(row, col);
+        col++;
+
+      }
+      else {
+        col = 0;
+        row++;
+      }
+    }
+  }
 };

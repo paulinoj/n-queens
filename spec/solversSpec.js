@@ -62,6 +62,8 @@ describe('solvers', function() {
         expect(numPieces).to.equal(0);
         expect(solutionBoard.get('n')).to.equal(n);
       });
+
+
     });
 
   });

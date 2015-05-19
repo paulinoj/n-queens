@@ -200,7 +200,7 @@
       var currentCount = 0;
 
       if (col >= size) {
-        row = col - size;
+        row = col - size + 1;
         col = size-1;
       }
       while (row < size && col >= 0) {
